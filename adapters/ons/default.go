@@ -14,10 +14,22 @@ func init() {
 
 // NewONSAdapter returns a configured ons.Adapter
 func NewONSAdapter(route *router.Route) (router.LogAdapter, error) {
-	f, err := os.OpenFile("./log.txt", os.O_APPEND|os.O_WRONLY, 0600)
-	if err != nil {
-		return nil, err
+	path := os.Getenv("FILE_PATH")
+	if path == "" {
+		path = "/logs"
 	}
+	filePath := fmt.Sprintf("%s/log.txt", path)
+	fmt.Println("Logging at: ", filePath)
+	var f *os.File
+	f, err := os.OpenFile(filePath, os.O_APPEND|os.O_WRONLY, 0600)
+	if err != nil {
+		newFile, err := os.Create(filePath)
+		if err != nil {
+			return nil, err
+		}
+		f = newFile
+	}
+
 	defaultExcludeContainers := map[string]bool{"/logspout": true, "/registry": true, "/postgres": true, "/rabbitmq": true, "/proxy": true, "/adminer": true, "/influxdb": true, "/chronograf": true, "/portainer": true, "/mongo": true, "/git-server": true}
 	excludeContainers := os.Getenv("EXCLUDE_CONTAINERS")
 	if excludeContainers != "" {
