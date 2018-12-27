@@ -18,7 +18,7 @@ func NewONSAdapter(route *router.Route) (router.LogAdapter, error) {
 	if err != nil {
 		return nil, err
 	}
-	defaultExcludeContainers := map[string]bool{"/registry": true, "/postgres": true, "/rabbitmq": true, "/proxy": true, "/adminer": true, "/influxdb": true, "/chronograf": true, "/portainer": true, "/mongo": true, "/git-server": true}
+	defaultExcludeContainers := map[string]bool{"/logspout": true, "/registry": true, "/postgres": true, "/rabbitmq": true, "/proxy": true, "/adminer": true, "/influxdb": true, "/chronograf": true, "/portainer": true, "/mongo": true, "/git-server": true}
 	excludeContainers := os.Getenv("EXCLUDE_CONTAINERS")
 	if excludeContainers != "" {
 		containersToExclude := strings.Split(excludeContainers, ",")
